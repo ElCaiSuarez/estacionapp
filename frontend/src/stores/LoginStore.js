@@ -5,7 +5,7 @@ import axios from 'axios'
 export const useLoginStore = defineStore('loginStore', {
     state: () => {
         return {
-            //usuarioStore: {},
+            usuarioStore: {},
             estaLogeado: false
         }
     },
@@ -13,8 +13,8 @@ export const useLoginStore = defineStore('loginStore', {
         async login(usuario) {
             try {
                 //HAGO UN POST AL BACKEND
-                const data = await axios.post('http://localhost:3001/api/login', usuario);
-                //this.usuarioStore.email = usuario.email;
+                await axios.post('http://localhost:3001/api/login', usuario);
+                this.usuarioStore.email = usuario.email;
                 this.estaLogeado = true;
             } catch (e) {
                 console.log(e);

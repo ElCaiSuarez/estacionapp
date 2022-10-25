@@ -7,8 +7,8 @@ export default {
   setup() {
     const store = useLoginStore();
     const { logout } = store;
-    const { usuario, estaLogeado } = storeToRefs(store);
-    return { store, usuario, estaLogeado, logout }
+    const { estaLogeado } = storeToRefs(store);
+    return { store, estaLogeado, logout }
   },
   data() {
     return {
@@ -40,7 +40,7 @@ export default {
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" v-if="estaLogeado" href="#" role="button" data-bs-toggle="dropdown"
                   aria-expanded="false">
-                  Mi Cuenta
+                  {{store.usuarioStore.email}}
                 </a>
                 <ul class="dropdown-menu">
                   <li class="nav-item"><RouterLink class="dropdown-item" v-if="estaLogeado" to="/search"> Buscar estacionamiento </RouterLink></li>
