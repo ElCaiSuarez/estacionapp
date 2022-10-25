@@ -18,6 +18,17 @@ app.post('/api/login', (req,res) => {
     
 })
 
+app.get('/api/locations', (req, res) => {
+    const locations = [
+        {id: 0, name: "Barrio 1"},
+        {id: 1, name: "Barrio 2"},
+        {id: 2, name: "Barrio 3"},
+        {id: 3, name: "Barrio 4"}
+    ];
+    console.log(locations);
+    res.json(locations);
+})
+
 app.get('/api/ping', (req,res) => {
     res.send('pong');
 })
