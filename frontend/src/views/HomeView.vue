@@ -1,14 +1,9 @@
-<!-- <script setup>
-import TheWelcome from '../components/TheWelcome.vue' -->
-<script>
+<script setup>
+import Home from '../components/Home.vue'
 </script>
 
 <template>
-  <main>
-    <!-- <TheWelcome /> -->
-    <h1>Estacionamientos APP</h1>
-  </main>
+  <div>
+    <Home />
+  </div>
 </template>
-
-<style>
-</style>

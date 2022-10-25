@@ -19,7 +19,7 @@
                 <option value="2">Villa del Parque</option>
                 <option value="3">Montecastro</option>
             </select>
-            <label for="floatingSelect">Buscar un Estacionamiento</label>
+            <label for="floatingSelect">Buscar un Estacionamiento</label><br/>
             <button type="submit" class="btn btn-primary mb-3">Buscar</button>
         </div>
     </div>

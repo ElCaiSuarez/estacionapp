@@ -1,9 +1,9 @@
 <script setup>
-import About from '../components/About.vue'
+import Search from '../components/Search.vue'
 </script>
 
 <template>
   <div>
-    <About />
+    <Search />
   </div>
 </template>

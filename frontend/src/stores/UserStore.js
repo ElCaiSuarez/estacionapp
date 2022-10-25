@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+//import axios from 'axios'
 
 export const useUsersStore = defineStore('usersStore', {
   state: () => {
@@ -12,13 +13,14 @@ export const useUsersStore = defineStore('usersStore', {
   },
   actions: {
     removeUser(id) {
-      //TODO
+      //TODO PUT
     },
     addUser(user) {
+      //TODO POST
       this.users.push(user);
     },
     editUser(user) {
-      //TODO
+      //TODO PUT
     }
   },
 })

@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+//import axios from 'axios'
 
 export const useVehiclesStore = defineStore('vehiclesStore', {
   state: () => {
@@ -12,13 +13,14 @@ export const useVehiclesStore = defineStore('vehiclesStore', {
   },
   actions: {
     removeVehicle(id) {
-      //TODO
+      //TODO PUT
     },
     addVehicle(vehicle) {
+      //TODO POST
       this.vehicles.push(vehicle);
     },
     editVehicle(vehicle) {
-      //TODO
+      //TODO PUT
     }
   },
 })

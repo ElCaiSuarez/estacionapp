@@ -5,6 +5,8 @@ import UserView from '../views/UserView.vue'
 import VehicleView from '../views/VehicleView.vue'
 import NotFoundView from '../views/NotFoundView.vue'
 import LoginView from '../views/LoginView.vue'
+import RegisterView from '../views/RegisterView.vue'
+import SearchView from '../views/SearchView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -15,13 +17,13 @@ const router = createRouter({
       component: HomeView
     },
     {
-      path: '/parking',
-      name: 'parking',
+      path: '/parkings',
+      name: 'parkings',
       component: ParkingView
     },
     {
-      path: '/user',
-      name: 'user',
+      path: '/users',
+      name: 'users',
       component: UserView
     },
     {
@@ -30,14 +32,24 @@ const router = createRouter({
       component: LoginView
     },
     {
-      path: '/vehicle',
-      name: 'vehicle',
+      path: '/vehicles',
+      name: 'vehicles',
       component: VehicleView
     },
     {
       path: '/:pathMatch(.*)*',
       name: 'notfound',
       component: NotFoundView
+    },
+    {
+      path: '/register',
+      name: 'register',
+      component: RegisterView
+    },
+    {
+      path: '/search',
+      name: 'search',
+      component: SearchView
     },
     {
       path: '/about',

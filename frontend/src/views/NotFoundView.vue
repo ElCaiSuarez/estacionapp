@@ -1,8 +1,9 @@
-<script>
+<script setup>
+import NotFound from '../components/NotFound.vue'
 </script>
 
 <template>
-  <main>
-    <h2>Error 404. Not found.</h2>
-  </main>
+  <div>
+    <NotFound />
+  </div>
 </template>
