@@ -1,4 +1,3 @@
-//import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import axios from 'axios'
 
@@ -10,20 +9,25 @@ export const useLoginStore = defineStore('loginStore', {
         }
     },
     actions: {
-        async login(usuario) {
+        async login(usuarioInput) {
             try {
-                //HAGO UN POST AL BACKEND
-                await axios.post('http://localhost:3001/api/login', usuario);
-                this.usuarioStore.email = usuario.email;
+                //HAGO UN POST AL BACKEND VALIDANDO LAS CREDENCIALES
+                const datos = await axios.post('http://localhost:3001/api/login', usuarioInput);
+                this.usuarioStore.email = usuarioInput.email;
                 this.estaLogeado = true;
+                //GUARDO EL TOKEN EN LA LOCALSTORAGE DEL NAVEGADOR PARA FUTUROS USOS
+                localStorage.setItem('usuario',
+                JSON.stringify({email:usuarioInput.email, token:datos.data}))
             } catch (e) {
                 console.log(e);
+                this.usuarioStore = {};
                 this.estaLogeado = false;
             }
-        
     },
         logout() {
             this.estaLogeado = false
+            this.usuarioStore.email = "";
+            localStorage.removeItem('usuario')
         }
     }
 

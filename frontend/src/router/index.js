@@ -19,12 +19,14 @@ const router = createRouter({
     {
       path: '/parkings',
       name: 'parkings',
-      component: ParkingView
+      component: ParkingView,
+      meta: { RequireAuth: true}
     },
     {
       path: '/users',
       name: 'users',
-      component: UserView
+      component: UserView,
+      meta: { RequireAuth: true}
     },
     {
       path: '/login',
@@ -34,7 +36,8 @@ const router = createRouter({
     {
       path: '/vehicles',
       name: 'vehicles',
-      component: VehicleView
+      component: VehicleView,
+      meta: { RequireAuth: true}
     },
     {
       path: '/:pathMatch(.*)*',
@@ -49,7 +52,8 @@ const router = createRouter({
     {
       path: '/search',
       name: 'search',
-      component: SearchView
+      component: SearchView,
+      meta: { RequireAuth: true}
     },
     {
       path: '/about',
@@ -60,6 +64,14 @@ const router = createRouter({
       component: () => import('../views/AboutView.vue')
     }
   ]
+})
+
+router.beforeEach((to,from,next) => {
+  const usuarioLogin = localStorage.getItem('usuario');
+  if( to.matched.some ( r => r.meta.RequireAuth) && !usuarioLogin) {
+    next('/')
+  }
+  next()
 })
 
 export default router
