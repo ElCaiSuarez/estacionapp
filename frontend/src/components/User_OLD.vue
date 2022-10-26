@@ -1,0 +1,61 @@
+<script>
+export default {
+  data() {
+    return {
+      user: {userName: "Usuario 1", email:"usuario1@dominio.com", password:"123456"},
+      inputUser: '',
+    }
+  }
+}
+</script>
+
+<template>
+    <div>
+        <h1>This is an user page</h1>
+        <form class="row-auto">
+            <div class="col-auto">
+                <label for="inputUserName" class="form-label">User Name</label>
+                <input type="text" class="form-control" id="inputUserName" v-model="user.userName">
+            </div>
+            <div class="col-auto">
+                <label for="inputEmail" class="form-label">Email</label>
+                <input type="email" class="form-control" id="inputEmail" v-model="user.email">
+            </div>
+            <div class="col-auto">
+                <label for="inputPassword" class="form-label">Password</label>
+                <input type="password" class="form-control" id="inputPassword" v-model="user.password">
+            </div>
+
+            <!-- <div class="col-auto">
+                <label for="inputAddress2" class="form-label">Address 2</label>
+                <input type="text" class="form-control" id="inputAddress2" placeholder="Piso o Departamento">
+            </div>
+            <div class="col-auto">
+                <label for="inputLocation" class="form-label">City</label>
+                <input type="text" class="form-control" id="inputLocation">
+            </div> -->
+            <!-- <div class="col-md-4">
+                <label for="inputState" class="form-label">State</label>
+                <select id="inputState" class="form-select">
+                    <option selected>Choose...</option>
+                    <option>...</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label for="inputZip" class="form-label">Zip</label>
+                <input type="text" class="form-control" id="inputZip">
+            </div> -->
+            <!-- <div class="col-12">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="gridCheck">
+                    <label class="form-check-label" for="gridCheck">
+                        Check me out
+                    </label>
+                </div>
+            </div> -->
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary">Actualizar</button>
+            </div>
+        </form>
+    </div>
+</template>

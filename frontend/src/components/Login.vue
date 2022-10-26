@@ -48,6 +48,6 @@ export default {
                 {{mensajeError}}
             </div>
         </form>
-        <button class="btn btn-secondary" type="submit">Registrarse</button>
+        <a href="/register" class="btn btn-secondary">Registrese</a>
     </div>
 </template>

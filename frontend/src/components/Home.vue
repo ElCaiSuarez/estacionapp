@@ -12,7 +12,7 @@
             <div class="card-body">
                 <h5 class="card-title">Busca estacionamientos por barrio</h5>
                 <p class="card-text">para conocer los estacionamientos que tener cerca</p>
-                <a href="/register" class="btn btn-primary">Registrese</a>
+                <a href="/register" class="btn btn-secondary">Registrese</a>
             </div>
         </div>
         <div class="card">

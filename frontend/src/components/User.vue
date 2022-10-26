@@ -1,61 +1,51 @@
-<script>
-export default {
-  data() {
-    return {
-      user: {userName: "Usuario 1", email:"usuario1@dominio.com", password:"123456"},
-      inputUser: '',
-    }
-  }
-}
-</script>
-
 <template>
     <div>
-        <h1>This is an user page</h1>
-        <form class="row-auto">
-            <div class="col-auto">
-                <label for="inputUserName" class="form-label">User Name</label>
-                <input type="text" class="form-control" id="inputUserName" v-model="user.userName">
-            </div>
-            <div class="col-auto">
-                <label for="inputEmail" class="form-label">Email</label>
-                <input type="email" class="form-control" id="inputEmail" v-model="user.email">
-            </div>
-            <div class="col-auto">
-                <label for="inputPassword" class="form-label">Password</label>
-                <input type="password" class="form-control" id="inputPassword" v-model="user.password">
-            </div>
-
-            <!-- <div class="col-auto">
-                <label for="inputAddress2" class="form-label">Address 2</label>
-                <input type="text" class="form-control" id="inputAddress2" placeholder="Piso o Departamento">
-            </div>
-            <div class="col-auto">
-                <label for="inputLocation" class="form-label">City</label>
-                <input type="text" class="form-control" id="inputLocation">
-            </div> -->
-            <!-- <div class="col-md-4">
-                <label for="inputState" class="form-label">State</label>
-                <select id="inputState" class="form-select">
-                    <option selected>Choose...</option>
-                    <option>...</option>
-                </select>
-            </div>
-            <div class="col-md-2">
-                <label for="inputZip" class="form-label">Zip</label>
-                <input type="text" class="form-control" id="inputZip">
-            </div> -->
-            <!-- <div class="col-12">
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="gridCheck">
-                    <label class="form-check-label" for="gridCheck">
-                        Check me out
-                    </label>
-                </div>
-            </div> -->
-            <div class="col-auto">
-                <button type="submit" class="btn btn-primary">Actualizar</button>
-            </div>
-        </form>
+        <h1>This is a user page</h1><br />
+        <div>
+            <button @click="getUsers()" class="btn btn-primary mb-3">Traer usuarios del
+                backend</button><br />
+            <select class="form-select" size="3" v-model="selected">
+                <option v-for="user in users" :key="user.id">{{ user.name }}</option>
+            </select><br />
+            {{ mensajeError }}
+            id <input type="number" v-model="userForm.id"/>
+            Nombre <input v-model="userForm.name" /><br/><br/>
+            Email <input type="email" v-model="userForm.email" />
+            Password <input type="password" v-model="userForm.password" /><br/><br/>
+            <button @click="postUser()" class="btn btn-primary mb-3">Agregar usuario</button><br />
+            {{ mensajeError }}
+        </div>
     </div>
 </template>
+
+<script>
+import userService from '../services/userService';
+
+export default {
+    data() {
+        return {
+            users: [],
+            userForm: { id:0, name: "", email: "", password: "" },
+            mensajeError: ""
+        }
+    },
+    methods: {
+        async getUsers() {
+            try {
+                this.users = await userService.getUsers()
+            } catch (e) {
+                this.mensajeError = e;
+            }
+
+        },
+        async postUser() {
+            try {
+                await userService.postUser({ ...this.userForm })
+                this.users.push({ ...this.userForm })
+            } catch (e) {
+                this.mensajeError = e;
+            }
+        }
+    }
+}
+</script>
