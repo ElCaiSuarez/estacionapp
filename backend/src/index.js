@@ -31,6 +31,7 @@ const users = [
 ]
 //USERS BACKEND get
 app.get('/api/users', (req, res) => {
+    //Buscar en usuarios por email(PARAMETRO)
     console.log(users);
     return res.json(users);
     /* const token = req.headers['authorization'];
