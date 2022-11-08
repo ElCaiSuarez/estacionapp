@@ -9,6 +9,28 @@ const app = express()
 app.use(cors());
 app.use(bodyParser.json());
 
+const users = [{
+    id: 0, name: 'Usuario backend 1', email: "usuario1@sistema.com", password: "123456", //TIENE 0 VEHICULO y 0 PARKING
+    id: 1, name: 'Usuario backend 1', email: "usuario2@sistema.com", password: "123456", //TIENE 2 VEHICULOS y 2 PARKING
+    id: 2, name: 'Usuario backend 1', email: "usuario3@sistema.com", password: "123456", //TIENE 1 VEHICULO y 0 PARKING
+    id: 3, name: 'Usuario backend 1', email: "usuario4@sistema.com", password: "123456" //TIENE 0 VEHICULO y 1 PARKING
+}]
+const vehicles = [{
+    id: 0, name: "Vehiculo1", userId: 1,
+    id: 1, name: "Vehiculo2", userId: 1,
+    id: 2, name: "Vehiculo3", userId: 2,
+}]
+const locations = [{
+    id: 0, name: "Barrio1", //TIENE 2 PARKING
+    id: 1, name: "Barrio2", //TIENE 1 PARKING
+    id: 2, name: "Barrio3", //NO TIENE PARKING
+}]
+const parkings = [{
+    id: 0, name: "Estacionamiento1", locationId: 0, userId: 1,
+    id: 1, name: "Estacionamiento2", locationId: 0, userId: 1,
+    id: 2, name: "Estacionamiento3", locationId: 1, userId: 3,
+}]
+
 //LOGIN BACKEND
 app.post('/api/login', (req, res) => {
     //Buscar en usuarios por email y guardarlo en una constante para comparar en el if
@@ -22,13 +44,6 @@ app.post('/api/login', (req, res) => {
     }
 })
 
-//USERS BACKEND
-const users = [
-    { id: 1, name: 'Usuario backend 1', email: 'usuario1@sistema.com', password: '123456' },
-    { id: 2, name: 'Usuario backend 2', email: 'usuario2@sistema.com', password: '123456'  },
-    { id: 3, name: 'Usuario backend 3', email: 'usuario3@sistema.com', password: '123456'  },
-    { id: 4, name: 'Usuario backend 4', email: 'usuario4@sistema.com', password: '123456'  }
-]
 //USERS BACKEND get
 app.get('/api/users', (req, res) => {
     //Buscar en usuarios por email(PARAMETRO)
@@ -65,13 +80,6 @@ app.post('/api/users', (req, res) => {
     }) */
 })
 
-//PARKINGS BACKEND
-const parkings = [
-    { id: 1, name: 'Estacionamiento backend 1' },
-    { id: 2, name: 'Estacionamiento backend 2' },
-    { id: 3, name: 'Estacionamiento backend 3' },
-    { id: 4, name: 'Estacionamiento backend 4' }
-]
 //PARKINGS BACKEND get
 app.get('/api/parkings', (req, res) => {
     console.log(parkings);
@@ -106,26 +114,12 @@ app.post('/api/parkings', (req, res) => {
     }) */
 })
 
-//LOCATIONS BACKEND
-const locations = [
-    { id: 0, name: "Barrio backend 1" },
-    { id: 1, name: "Barrio backend 2" },
-    { id: 2, name: "Barrio backend 3" },
-    { id: 3, name: "Barrio backend 4" }
-]
 //LOCATIONS BACKEND get
 app.get('/api/locations', (req, res) => {
     console.log(locations);
     return res.json(locations);
 })
 
-//VEHICLES BACKEND
-const vehicles = [
-    { id: 1, name: 'Vehiculo backend 1' },
-    { id: 2, name: 'Vehiculo backend 2' },
-    { id: 3, name: 'Vehiculo backend 3' },
-    { id: 4, name: 'Vehiculo backend 4' }
-]
 //VEHICLES BACKEND get
 app.get('/api/vehicles', (req, res) => {
     console.log(vehicles);
