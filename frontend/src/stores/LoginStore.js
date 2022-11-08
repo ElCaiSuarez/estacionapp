@@ -28,6 +28,7 @@ export const useLoginStore = defineStore('loginStore', {
             this.estaLogeado = false
             this.usuarioStore.email = "";
             localStorage.removeItem('usuario')
+            this.$router.push('/home')
         }
     }
 

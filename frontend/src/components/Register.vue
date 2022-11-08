@@ -4,15 +4,19 @@ import userService from '../services/userService';
 export default {
     data() {
         return {
-            userForm: { id:0, name: "", email: "", password: "" },
+            userForm: {
+                id: 0,
+                name: "",
+                email: "",
+                password: ""
+            },
             mensajeError: ""
         }
     },
     methods: {
         async registerUser() {
             try {
-                await userService.registerUser({ ...this.userForm })
-                this.mensajeError = "Usuario registrado";
+                this.mensajeError = await userService.registerUser({ ...this.userForm })
             } catch (e) {
                 this.mensajeError = e;
             }
@@ -26,7 +30,7 @@ export default {
         <h1>This is a register page</h1>
         <form class="row-auto">
             <div class="col-auto">
-                <label for="inputUserName" class="form-label">Id</label>
+                <label for="inputUserId" class="form-label">Id</label>
                 <input type="number" class="form-control" v-model="userForm.id">
             </div>
             <div class="col-auto">
@@ -35,7 +39,7 @@ export default {
             </div>
             <div class="col-auto">
                 <label for="inputEmail" class="form-label">Email</label>
-                <input type="email" class="form-control" v-model="userForm.email">
+                <input type="email" class="form-control" v-model="userForm.email" required>
             </div>
             <div class="col-auto">
                 <label for="inputPassword" class="form-label">Password</label>
@@ -43,7 +47,7 @@ export default {
             </div>
             <div class="col-auto">
                 <button @click="registerUser()" class="btn btn-secondary">Registrarse</button>
-                {{mensajeError}}
+                {{ mensajeError }}
             </div>
         </form>
     </div>

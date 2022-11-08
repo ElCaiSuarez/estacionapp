@@ -2,7 +2,7 @@ import apiService from './apiService'
 
 export default {
     //DEBERIA TRAER SOLO EL USUARIO LOGEADO, Y LUEGO CON PUT MODIFICAR PASSWORD x ej
-    async getUsers() {
+    async getUsers() {//CON AUTENTICATION
         try {
             apiService.apiClient.defaults.headers['authorization'] =
                 JSON.parse(localStorage.getItem('usuario')).token
@@ -12,21 +12,23 @@ export default {
             throw "Error de conexion"
         }
     },
-    //DEBERIA USARSE PARA LA REGISTRACION
-    async postUser(user) {
+    async postUser(user) {//CON AUTENTICATION
         try {
             apiService.apiClient.defaults.headers['authorization'] =
                 JSON.parse(localStorage.getItem('usuario')).token
-            await apiService.apiClient.post('/users', user);
+            let saved = await apiService.apiClient.post('/users', user);
+            console.log("El backend devolvio el siguiente mensaje: " + saved.data);
+            return saved.data;
 
         } catch (e) {
             throw "Error de conexion"
         }
     },
-    async registerUser(user) {
+    async registerUser(user) {//SIN AUTENTICATION
         try {
-            await apiService.apiClient.post('/users', user);
-
+            let saved = await apiService.apiClient.post('/users', user);
+            console.log("El backend devolvio el siguiente mensaje: " + saved.data);
+            return saved.data;
         } catch (e) {
             throw "Error de conexion"
         }
