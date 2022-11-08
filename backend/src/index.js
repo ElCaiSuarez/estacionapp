@@ -9,33 +9,12 @@ const app = express()
 app.use(cors());
 app.use(bodyParser.json());
 
-const users = [{
-    id: 0, name: 'Usuario backend 1', email: "usuario1@sistema.com", password: "123456", //TIENE 0 VEHICULO y 0 PARKING
-    id: 1, name: 'Usuario backend 1', email: "usuario2@sistema.com", password: "123456", //TIENE 2 VEHICULOS y 2 PARKING
-    id: 2, name: 'Usuario backend 1', email: "usuario3@sistema.com", password: "123456", //TIENE 1 VEHICULO y 0 PARKING
-    id: 3, name: 'Usuario backend 1', email: "usuario4@sistema.com", password: "123456" //TIENE 0 VEHICULO y 1 PARKING
-}]
-const vehicles = [{
-    id: 0, name: "Vehiculo1", userId: 1,
-    id: 1, name: "Vehiculo2", userId: 1,
-    id: 2, name: "Vehiculo3", userId: 2,
-}]
-const locations = [{
-    id: 0, name: "Barrio1", //TIENE 2 PARKING
-    id: 1, name: "Barrio2", //TIENE 1 PARKING
-    id: 2, name: "Barrio3", //NO TIENE PARKING
-}]
-const parkings = [{
-    id: 0, name: "Estacionamiento1", locationId: 0, userId: 1,
-    id: 1, name: "Estacionamiento2", locationId: 0, userId: 1,
-    id: 2, name: "Estacionamiento3", locationId: 1, userId: 3,
-}]
-
 //LOGIN BACKEND
 app.post('/api/login', (req, res) => {
-    //Buscar en usuarios por email y guardarlo en una constante para comparar en el if
-    if (req.body && req.body.email == "usuario@sistema.com" && req.body.password == "123456") {
-        const token = jsonwebtoken.sign({ usuario: 'usuario@sistema.com', rol: 'ADM' }, 'frase secreta');
+    let userAux = users.filter(user => user.email == req.body.email);//Filtro usuarios, buscando el usuario del login
+    console.log(userAux);
+    if (userAux.length > 0 && req.body.email == userAux[0].email && req.body.password == userAux[0].password) {
+        const token = jsonwebtoken.sign({ usuario: userAux.email, rol: 'ADM' }, 'frase secreta');
         console.log(req.body);
         res.json(token);
     } else {
@@ -44,29 +23,50 @@ app.post('/api/login', (req, res) => {
     }
 })
 
+//USERS BACKEND
+const users = [
+    { id: 0, name: 'Usuario 1', email: 'usuario1@sistema.com', password: '123456' },//TIENE 0 VEHICULO y 0 PARKING
+    { id: 1, name: 'Usuario 2', email: 'usuario2@sistema.com', password: '123456' },//TIENE 2 VEHICULOS y 2 PARKING
+    { id: 2, name: 'Usuario 3', email: 'usuario3@sistema.com', password: '123456' },//TIENE 1 VEHICULO y 0 PARKING
+    { id: 3, name: 'Usuario 4', email: 'usuario4@sistema.com', password: '123456' }//TIENE 0 VEHICULO y 1 PARKING
+]
 //USERS BACKEND get
 app.get('/api/users', (req, res) => {
-    //Buscar en usuarios por email(PARAMETRO)
-    console.log(users);
-    return res.json(users);
-    /* const token = req.headers['authorization'];
-    jsonwebtoken.verify(token,'frase secreta',(err,payload) =>{
-        if(err){
-            console.log("Error 401");
+    //NO DEBERIA EXISTIR UN GET DE USUARIOS, SOLO UN PATCH PARA MODIFICAR MAIL y/o PASSWORD
+    //Buscar en usuarios por email(PARAMETRO) funciona por POSTMAN con Body/json, pero no desde el frontend
+    const token = req.headers['authorization'];
+    jsonwebtoken.verify(token, 'frase secreta', (err, payload) => {
+        if (err) {
+            console.log("Error 401 : Unauthorized");
             res.sendStatus(401);
-        }else{
-            console.log(users);
-            res.json(users)
+        } else {
+            if (req.query.email) {
+                let userAux = users.filter(user => user.email == req.query.email);//Filtro usuarios, buscando el usuario del body
+                console.log(req.query.email);
+                console.log(userAux);
+                res.json(userAux)
+            } else {
+                res.json(users)//Cada usuario autenticado no deberian recibir todos los usuarios
+            }
+
         }
     })
-}) */
 })
+
 //USERS BACKEND post 
 app.post('/api/users', (req, res) => {
     //Buscar en usuarios por email para que no este repetido
-    users.push(req.body);
-    res.send('Alta OK')
-    console.log('Alta OK' + req.body);
+    let userAux = users.filter(user => user.email == req.body.email);//Filtro usuarios, buscando el usuario del post
+    console.log(userAux);
+    if (userAux.length > 0) {
+        res.send('ERROR! Usuario existente: ' + req.body.email)
+        console.log('ERROR! Usuario existente: ' + req.body.email);
+    } else {
+        users.push(req.body);
+        res.send('Usuario registrado: ' + req.body.email)
+        console.log('Usuario registrado: ' + req.body.email);
+    }
+    //La autenticacion no sera necesaria en el post de usuarios, ya que solo se utilizara para registrar nuevos usuarios
     /* const token = req.headers['authorization'];
     jsonwebtoken.verify(token,'frase secreta',(err,payload) =>{
         if(err){
@@ -80,10 +80,25 @@ app.post('/api/users', (req, res) => {
     }) */
 })
 
+//PARKINGS BACKEND
+let lastIdParking = 2;
+const parkings = [
+    { id: 0, name: 'Estacionamiento 1', locationId: 0, userId: 1 },
+    { id: 1, name: 'Estacionamiento 2', locationId: 0, userId: 1 },
+    { id: 2, name: 'Estacionamiento 3', locationId: 1, userId: 3 },
+]
 //PARKINGS BACKEND get
 app.get('/api/parkings', (req, res) => {
-    console.log(parkings);
-    return res.json(parkings);
+    console.log(req.body.email);
+    let userAux = users.filter(user => user.email == req.body.email);
+    if (userAux.length > 0) {
+        console.log(userAux[0]);
+        let parkingAux = parkings.filter(parking => parking.userId == userAux[0].id)
+        return res.json(parkingAux);
+    } else {
+        res.send('ERROR! Usuario inexistente: ' + req.body.email)
+        console.log('ERROR! Usuario inexistente: ' + req.body.email);
+    }
     /* const token = req.headers['authorization'];
     jsonwebtoken.verify(token,'frase secreta',(err,payload) =>{
         if(err){
@@ -96,11 +111,53 @@ app.get('/api/parkings', (req, res) => {
     })
 }) */
 })
+app.get('/api/parkings/location', (req, res) => {
+    console.log(req.body.locationId);
+    let locationAux = locations.filter(location => location.id == req.body.locationId);
+    if (locationAux.length > 0) {
+        console.log(locationAux[0]);
+        let parkingAux = parkings.filter(parking => parking.locationId == locationAux[0].id)
+        return res.json(parkingAux);
+    } else {
+        res.send('ERROR! Barrio inexistente: ' + req.body.locationId)
+        console.log('ERROR! Barrio inexistente: ' + req.body.locationId);
+    }
+    /* const token = req.headers['authorization'];
+    jsonwebtoken.verify(token,'frase secreta',(err,payload) =>{
+        if(err){
+            console.log("Error 401");
+            res.sendStatus(401);
+        }else{
+            console.log(parkings);
+            res.json(parkings)
+        }
+    })
+}) */
+})
+
 //PARKINGS BACKEND post
 app.post('/api/parkings', (req, res) => {
-    parkings.push(req.body);
-    res.send('Alta OK')
-    console.log('Alta OK' + req.body);
+    console.log(re.body);
+    if (!req.body.name || !req.body.locationId || !req.body.userId) {
+        return res.send('ERROR! falta nombre, barrio o userId ');
+    }
+    let userAux = users.filter(user => user.id == req.body.userId);
+    if (userAux.length <= 0) {
+        return res.send('ERROR! Usuario inexsistente ');
+    }
+    let locationAux = locations.filter(location => location.id == req.body.locationId);
+    if (locationAux.length <= 0) {
+        return res.send('ERROR! Barrio inexsistente ');
+    }
+    let parkingAux = parkings.filter(parking => parking.name == req.body.name);
+    if (parkingAux.length > 0) {
+        return res.send('ERROR! Parking existente ');
+    }
+    lastIdParking++
+    let parking = { id: lastIdParking, name: req.body.name, locationId: req.body.locationId, userId: req.body.userId };
+    parkings.push(parking);
+    res.send('Alta OK ' + req.body.name)
+    console.log('Alta OK ' + req.body.name);
     /* const token = req.headers['authorization'];
     jsonwebtoken.verify(token,'frase secreta',(err,payload) =>{
         if(err){
@@ -114,16 +171,39 @@ app.post('/api/parkings', (req, res) => {
     }) */
 })
 
+//LOCATIONS BACKEND
+const locations = [
+    { id: 0, name: "Barrio 1" },//TIENE 2 PARKING
+    { id: 1, name: "Barrio 2" },//TIENE 1 PARKING
+    { id: 2, name: "Barrio 3" }//NO TIENE PARKING
+]
 //LOCATIONS BACKEND get
 app.get('/api/locations', (req, res) => {
     console.log(locations);
     return res.json(locations);
 })
 
+//VEHICLES BACKEND
+let lastIdVehicle = 2;
+const vehicles = [
+    { id: 0, patent: 'ABC111', userId: 1 },
+    { id: 1, patent: 'ABC222', userId: 1 },
+    { id: 2, patent: 'CBA333', userId: 2 },
+]
 //VEHICLES BACKEND get
 app.get('/api/vehicles', (req, res) => {
-    console.log(vehicles);
-    return res.json(vehicles);
+    //filtrar vehicles por userId (CRUD)
+    console.log(req.body.email);
+    let userAux = users.filter(user => user.email == req.body.email);
+    if (userAux.length > 0) {
+        console.log(userAux[0]);
+        let vehiclesAux = vehicles.filter(vehicle => vehicle.userId == userAux[0].id)
+        return res.json(vehiclesAux);
+    } else {
+        res.send('ERROR! Usuario inexistente: ' + req.body.email)
+        console.log('ERROR! Usuario inexistente: ' + req.body.email);
+    }
+
     /* const token = req.headers['authorization'];
     jsonwebtoken.verify(token,'frase secreta',(err,payload) =>{
         if(err){
@@ -137,9 +217,23 @@ app.get('/api/vehicles', (req, res) => {
 }) */
 })
 app.post('/api/vehicles', (req, res) => {
-    vehicles.push(req.body);
-    res.send('Alta OK')
-    console.log('Alta OK' + req.body);
+    if (!req.body.patent || !req.body.userId) {
+        return res.send('ERROR! falta patente o userId ');
+    }
+    let userAux = users.filter(user => user.id == req.body.userId);
+    if (userAux.length <= 0) {
+        return res.send('ERROR! Usuario inexsistente ');
+    }
+    let vehicleAux = vehicles.filter(vehicle => vehicle.patent == req.body.patent);
+    if (vehicleAux.length > 0) {
+        return res.send('ERROR! Vehiculo existente ');
+    }
+    lastIdVehicle++
+    let vehicle = { id: lastIdVehicle, patent: req.body.patent, userId: req.body.userId };
+    vehicles.push(vehicle);
+    res.send('Alta OK ' + req.body.patent)
+    console.log('Alta OK ' + req.body.patent);
+
     /* const token = req.headers['authorization'];
     jsonwebtoken.verify(token,'frase secreta',(err,payload) =>{
         if(err){
