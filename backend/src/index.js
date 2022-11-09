@@ -24,6 +24,7 @@ app.post('/api/login', (req, res) => {
 })
 
 //USERS BACKEND
+let lastIdUser = 3;
 const users = [
     { id: 0, name: 'Usuario 1', email: 'usuario1@sistema.com', password: '123456' },//TIENE 0 VEHICULO y 0 PARKING
     { id: 1, name: 'Usuario 2', email: 'usuario2@sistema.com', password: '123456' },//TIENE 2 VEHICULOS y 2 PARKING
@@ -46,7 +47,7 @@ app.get('/api/users', (req, res) => {
                 console.log(userAux);
                 res.json(userAux)
             } else {
-                res.json(users)//Cada usuario autenticado no deberian recibir todos los usuarios
+                res.send('ERROR! falta email ');
             }
 
         }
@@ -56,16 +57,55 @@ app.get('/api/users', (req, res) => {
 //USERS BACKEND post 
 app.post('/api/users', (req, res) => {
     //Buscar en usuarios por email para que no este repetido
+    if (!req.body.name) {
+        return res.send('ERROR! falta nombre ');
+    }
+    if (!req.body.email) {
+        return res.send('ERROR! falta email ');
+    }
+    if (!req.body.password) {
+        return res.send('ERROR! falta password ');
+    }
     let userAux = users.filter(user => user.email == req.body.email);//Filtro usuarios, buscando el usuario del post
     console.log(userAux);
     if (userAux.length > 0) {
-        res.send('ERROR! Usuario existente: ' + req.body.email)
-        console.log('ERROR! Usuario existente: ' + req.body.email);
-    } else {
-        users.push(req.body);
-        res.send('Usuario registrado: ' + req.body.email)
-        console.log('Usuario registrado: ' + req.body.email);
+        return res.send('ERROR! Usuario existente: ' + req.body.email)
     }
+    lastIdUser++;
+    let user = { id: lastIdUser, name: req.body.name, email: req.body.email, password: req.body.password }
+    users.push(user);
+    res.send('Usuario registrado: ' + req.body.email)
+    console.log('Usuario registrado: ' + req.body.email);
+    //La autenticacion no sera necesaria en el post de usuarios, ya que solo se utilizara para registrar nuevos usuarios
+    /* const token = req.headers['authorization'];
+    jsonwebtoken.verify(token,'frase secreta',(err,payload) =>{
+        if(err){
+            console.log("Error 401");
+            res.sendStatus(401);
+        }else{
+            users.push(req.body);
+            res.send('Alta OK')
+            console.log('Alta OK' + req.body);
+        }
+    }) */
+})
+app.post('/api/users/update', (req, res) => {
+    //Buscar en usuarios por email para que no este repetido
+    let userAux = users.filter(user => user.email == req.query.email);//Filtro usuarios, buscando el usuario del post
+    if(userAux.length <= 0){
+        return res.send('ERROR! Usuario inexistente: ' + req.query.email)
+    }
+    if (req.body.name) {
+        userAux[0].name = req.body.name;
+    }
+    if (req.body.email) {
+        userAux[0].email = req.body.email;
+    }
+    if (req.body.password) {
+        userAux[0].password = req.body.password;
+    }    
+    res.send('Usuario actualizado: ' + req.body.email)
+    console.log('Usuario actualizado: ' + req.body.email);
     //La autenticacion no sera necesaria en el post de usuarios, ya que solo se utilizara para registrar nuevos usuarios
     /* const token = req.headers['authorization'];
     jsonwebtoken.verify(token,'frase secreta',(err,payload) =>{
@@ -135,11 +175,19 @@ app.get('/api/parkings/location', (req, res) => {
 }) */
 })
 
+
+
 //PARKINGS BACKEND post
 app.post('/api/parkings', (req, res) => {
-    console.log(re.body);
-    if (!req.body.name || !req.body.locationId || !req.body.userId) {
-        return res.send('ERROR! falta nombre, barrio o userId ');
+    console.log(req.body);
+    if (!req.body.name) {
+        return res.send('ERROR! falta nombre ');
+    }
+    if (req.body.locationId < 0) {
+        return res.send('ERROR! falta barrio ');
+    }
+    if (!req.body.userId) {
+        return res.send('ERROR! falta userId ');
     }
     let userAux = users.filter(user => user.id == req.body.userId);
     if (userAux.length <= 0) {
