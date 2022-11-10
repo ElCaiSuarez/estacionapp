@@ -47,15 +47,15 @@ export default {
                   <li>
                     <hr class="dropdown-divider">
                   </li>
-                  <li class="nav-item"><RouterLink class="dropdown-item" v-if="estaLogeado" to="/users"> CRUD-Users </RouterLink></li>
-                  <li class="nav-item"><RouterLink class="dropdown-item" v-if="estaLogeado" to="/vehicles"> CRUD-Vehicles </RouterLink></li>
-                  <li class="nav-item"><RouterLink class="dropdown-item" v-if="estaLogeado" to="/parkings"> CRUD-Parkings </RouterLink></li>
+                  <li class="nav-item"><RouterLink class="dropdown-item" v-if="estaLogeado" to="/users"> Mi Usuario </RouterLink></li>
+                  <li class="nav-item"><RouterLink class="dropdown-item" v-if="estaLogeado" to="/vehicles"> Mis Vehiculos </RouterLink></li>
+                  <li class="nav-item"><RouterLink class="dropdown-item" v-if="estaLogeado" to="/parkings"> Mis Estacionamientos </RouterLink></li>
                 </ul>
               </li>
-              <li class="nav-item"><RouterLink class="nav-link" v-if="!estaLogeado" to="/about">About</RouterLink></li>
-              <li class="nav-item"><RouterLink class="nav-link" v-if="!estaLogeado" to="/register">Register</RouterLink></li>
-              <li class="nav-item"><RouterLink class="nav-link" v-if="!estaLogeado" to="/login">Login</RouterLink></li>
-              <li class="nav-item"><button class="btn nav-link" @click="logoutForm()" v-if="estaLogeado">Logout</button></li>
+              <li class="nav-item"><RouterLink class="nav-link" v-if="!estaLogeado" to="/about">Sobre Nosotros</RouterLink></li>
+              <li class="nav-item"><RouterLink class="nav-link" v-if="!estaLogeado" to="/register">Registrate</RouterLink></li>
+              <li class="nav-item"><RouterLink class="nav-link" v-if="!estaLogeado" to="/login">Ingresa</RouterLink></li>
+              <li class="nav-item"><button class="btn nav-link" @click="logoutForm()" v-if="estaLogeado">Salir</button></li>
             </ul>
           </div>
         </div>

@@ -12,7 +12,8 @@ export default {
     data() {
         return {
             usuarioForm: { email: "", password: "" },
-            mensajeError: ""
+            mensajeError: "",
+            mostrar: false
         }
     },
     methods: {
@@ -22,6 +23,7 @@ export default {
                 console.log('Logeado ' + this.usuarioStore.email);
                 this.$router.push('/search')
             } else {
+                this.mostrar = true;
                 console.log('No esta logeado');
                 this.mensajeError = "Error en las credenciales"
             }
@@ -33,21 +35,23 @@ export default {
 
 <template>
     <div>
-        <h1>This is a login page</h1>
+        <h1>Ingresa</h1>
         <form @submit.prevent="login" class="row-auto">
             <div class="col-auto">
-                <label for="inputEmail" class="form-label">Email</label>
+                <label for="inputEmail" class="form-label">Correo</label>
                 <input type="email" class="form-control" v-model="usuarioForm.email" required/>
             </div>
             <div class="col-auto">
-                <label for="inputPassword" class="form-label">Password</label>
+                <label for="inputPassword" class="form-label">Contraseña</label>
                 <input type="password" class="form-control" v-model="usuarioForm.password" required/><br/>
             </div>
             <div class="col-auto">
-                <button type="submit" class="btn btn-primary mb-3">Login</button>
-                {{mensajeError}}
+                <button type="submit" class="btn btn-primary mb-3">Ingresar</button>
+            </div>
+            <div class="alert alert-danger" v-show="mostrar">
+                {{ mensajeError }}
             </div>
         </form>
-        <a href="/register" class="btn btn-secondary">Registrese</a>
+        <a href="/register" class="btn btn-secondary">Registrate</a>
     </div>
 </template>

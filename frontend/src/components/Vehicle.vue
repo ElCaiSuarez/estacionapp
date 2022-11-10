@@ -24,7 +24,8 @@ export default {
         return {
             vehicles: [],
             vehicleForm: { id:0, patent: "" },
-            mensajeError: ""
+            mensajeError: "",
+            mostrar: false
         }
     },
     methods: {

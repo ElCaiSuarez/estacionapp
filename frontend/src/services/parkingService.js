@@ -1,12 +1,24 @@
 import apiService from './apiService'
 
 export default {
-    async getParkings() {
+    async getParkings(email) {
         try {
             apiService.apiClient.defaults.headers['authorization'] =
                 JSON.parse(localStorage.getItem('usuario')).token
-            const datos = await apiService.apiClient.get('/parkings');
-            return datos.data
+            console.log(email);
+            const res = await apiService.apiClient.get('/parkings', { params: { email: email } });
+            console.log(res.data);
+            return res.data
+        } catch (e) {
+            throw "Error de conexion"
+        }
+    },
+    async getParkings(locationId) {
+        try {
+            console.log(locationId);
+            const res = await apiService.apiClient.get('/parkings/location', { params: { locationId: locationId } });
+            console.log(res.data);
+            return res.data
         } catch (e) {
             throw "Error de conexion"
         }
@@ -20,5 +32,6 @@ export default {
         } catch (e) {
             throw "Error de conexion"
         }
-    }
+    },
+
 }
