@@ -17,8 +17,10 @@ export default {
   },
   methods: {
     logoutForm() {
-      this.logout();
+      localStorage.removeItem('usuario')
+      this.estaLogeado = false
       this.$router.push('/')
+      console.log('No esta logeado');
     }
   }
 }
@@ -36,13 +38,13 @@ export default {
             <span class="navbar-toggler-icon"></span>
           </button>
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0" >
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" v-if="estaLogeado" href="#" role="button" data-bs-toggle="dropdown"
                   aria-expanded="false">
                   {{store.usuarioStore.email}}
                 </a>
-                <ul class="dropdown-menu">
+                <ul class="dropdown-menu" style="margin:auto">
                   <li class="nav-item"><RouterLink class="dropdown-item" v-if="estaLogeado" to="/search"> Buscar estacionamiento </RouterLink></li>
                   <li>
                     <hr class="dropdown-divider">

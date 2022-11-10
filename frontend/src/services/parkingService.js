@@ -1,10 +1,8 @@
 import apiService from './apiService'
 
 export default {
-    async getParkings(email) {
+    async getParkingsEmail(email) {
         try {
-            apiService.apiClient.defaults.headers['authorization'] =
-                JSON.parse(localStorage.getItem('usuario')).token
             console.log(email);
             const res = await apiService.apiClient.get('/parkings', { params: { email: email } });
             console.log(res.data);

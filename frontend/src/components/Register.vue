@@ -49,8 +49,9 @@ export default {
             <div class="col-auto">
                 <button @click="registerUser()" class="btn btn-secondary">Registrar</button>
             </div>
-            <div class="alert alert-danger" v-show="mostrar">
+            <div class="alert alert-danger alert-dismissible" role="alert" v-show="mostrar">
                 {{ mensajeError }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         </form>
     </div>

@@ -1,8 +1,28 @@
 <template>
     <div>
-        <h1>This is a parking page</h1><br />
         <div>
-            <button @click="getParkings()" class="btn btn-primary mb-3">Traer estacionamientos del
+            <h2>Mis Estacionamientos</h2><br />
+            <div class="container">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Nombre</th>
+                            <th scope="col">Barrio</th>
+                            <th scope="col">Usuario</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="parking in parkings" :key="parking.id">
+                            <th scope="row">{{parking.id}}</th>
+                            <td>{{parking.name}}</td>
+                            <td>{{parking.locationId}}</td>
+                            <td>{{parking.userId}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!-- <button @click="getParkings()" class="btn btn-primary mb-3">Traer estacionamientos del
                 backend</button><br />
             <select class="form-select" size="3" v-model="selected">
                 <option v-for="parking in parkings" :key="parking.id">{{ parking.name }}</option>
@@ -11,7 +31,7 @@
             id <input type="number" v-model="parkingForm.id"/>
             Nombre <input v-model="parkingForm.name" /><br/><br/>
             <button @click="postParking()" class="btn btn-primary mb-3">Agregar estacionamiento</button><br />
-            {{ mensajeError }}
+            {{ mensajeError }} -->
         </div>
     </div>
 </template>
@@ -24,18 +44,29 @@ export default {
         return {
             parkings: [],
             parkingForm: { id:0, name: "" },
-            mensajeError: ""
+            parking: {},
+            mensajeError: "",
+            mostrar: false
         }
     },
+    mounted:function(){
+        console.log("Busqueda por Usuario");
+        let usuarioAux = JSON.parse(localStorage.getItem('usuario'));
+        console.log(usuarioAux.email);
+        parkingService.getParkingsEmail(usuarioAux.email).then(res => {
+            this.parkings = res
+            console.log(this.parkings);
+        });
+    },
     methods: {
-        async getParkings() {
+        /* async updatePakgings(parking) {
             try {
-                this.parkings = await parkingService.getParkings()
+                console.log("Actualizado: " + parking);
+                this.parking = await parkingService.updateParkings(parking)
             } catch (e) {
                 this.mensajeError = e;
             }
-
-        },
+        }, */
         async postParking() {
             try {
                 await parkingService.postParking({ ...this.parkingForm })

@@ -11,14 +11,15 @@ app.use(bodyParser.json());
 
 //LOGIN BACKEND post
 app.post('/api/login', (req, res) => {
+    console.log("Email recibido: " + req.body.email);
     let userAux = users.filter(user => user.email == req.body.email);//Filtro usuarios, buscando el usuario del login
-    console.log(userAux);
     if (userAux.length > 0 && req.body.email == userAux[0].email && req.body.password == userAux[0].password) {
         const token = jsonwebtoken.sign({ usuario: userAux.email, rol: 'ADM' }, 'frase secreta');
-        console.log(req.body);
+        console.log("Usuario encontrado: " + userAux[0]);
+        console.log("Login exitoso con token: " + token);
         res.json(token);
     } else {
-        console.log("Error 401");
+        console.log("Login unauthorized - Error 401");
         res.sendStatus(401);
     }
 })
@@ -33,67 +34,44 @@ const users = [
 ]
 //USERS BACKEND get
 app.get('/api/users', (req, res) => {
+    console.log("Email recibido: " + req.query.email);
     let userAux = users.filter(user => user.email == req.query.email);
     if(userAux.length > 0){
+        console.log("Usuario encontrado: " + userAux[0]);
         return res.json(userAux[0]);
     }else{
         res.send(false)
         console.log('ERROR! Usuario inexistente: ' + req.query.email);
     }
-    /*const token = req.headers['authorization'];
-    jsonwebtoken.verify(token, 'frase secreta', (err, payload) => {
-        if (err) {
-            console.log("Error 401 : Unauthorized");
-            res.sendStatus(401);
-        } else {
-            if (req.query.email) {
-                let userAux = users.filter(user => user.email == req.query.email);//Filtro usuarios, buscando el usuario del body
-                console.log(req.query.email);
-                console.log(userAux);
-                return res.json(userAux)
-            } else {
-                res.send('ERROR! falta email ');
-            }
-
-        }
-    })*/
 })
 //USERS BACKEND post 
 app.post('/api/users', (req, res) => {
-    //Buscar en usuarios por email para que no este repetido
     if (!req.body.name) {
+        console.log('ERROR! falta nombre ');
         return res.send('ERROR! falta nombre ');
     }
     if (!req.body.email) {
+        console.log('ERROR! falta email ');
         return res.send('ERROR! falta email ');
     }
     if (!req.body.password) {
+        console.log('ERROR! falta password ');
         return res.send('ERROR! falta password ');
     }
     let userAux = users.filter(user => user.email == req.body.email);//Filtro usuarios, buscando el usuario del post
-    console.log(userAux);
     if (userAux.length > 0) {
+        console.log('ERROR! Usuario existente: ' + req.body.email);
         return res.send('ERROR! Usuario existente: ' + req.body.email)
     }
     lastIdUser++;
     let user = { id: lastIdUser, name: req.body.name, email: req.body.email, password: req.body.password }
     users.push(user);
     res.send('Usuario registrado: ' + req.body.email)
-    console.log('Usuario registrado: ' + req.body.email);
-    //La autenticacion no sera necesaria en el post de usuarios, ya que solo se utilizara para registrar nuevos usuarios
-    /* const token = req.headers['authorization'];
-    jsonwebtoken.verify(token,'frase secreta',(err,payload) =>{
-        if(err){
-            console.log("Error 401");
-            res.sendStatus(401);
-        }else{
-            users.push(req.body);
-            res.send('Alta OK')
-            console.log('Alta OK' + req.body);
-        }
-    }) */
+    console.log('Usuario registrado: ' + user);
 })
+//USERS BACKEND post Actualizar
 app.post('/api/users/update', (req, res) => {
+    console.log("Email recibido: " + req.body.emailAnterior);
     let userAux = users.filter(user => user.email == req.body.emailAnterior);//Filtro usuarios, buscando el usuario del post
     if(userAux.length <= 0){
         console.log('ERROR! Usuario inexistente: ' + req.body.emailAnterior);
@@ -108,20 +86,8 @@ app.post('/api/users/update', (req, res) => {
     if (req.body.password) {
         userAux[0].password = req.body.password;
     }    
-    console.log('Usuario actualizado: ' + req.body.email);
+    console.log('Usuario actualizado: ' + userAux[0]);
     res.send('Usuario actualizado: ' + req.body.email)
-    //La autenticacion no sera necesaria en el post de usuarios, ya que solo se utilizara para registrar nuevos usuarios
-    /* const token = req.headers['authorization'];
-    jsonwebtoken.verify(token,'frase secreta',(err,payload) =>{
-        if(err){
-            console.log("Error 401");
-            res.sendStatus(401);
-        }else{
-            users.push(req.body);
-            res.send('Alta OK')
-            console.log('Alta OK' + req.body);
-        }
-    }) */
 })
 
 //PARKINGS BACKEND
@@ -133,92 +99,67 @@ const parkings = [
 ]
 //PARKINGS BACKEND get
 app.get('/api/parkings', (req, res) => {
-    console.log(req.query.email);
+    console.log("Email recibido: " + req.query.email);
     let userAux = users.filter(user => user.email == req.query.email);
     if (userAux.length > 0) {
-        console.log(userAux[0]);
+        console.log("Usuario encontrado: " + userAux[0]);
         let parkingAux = parkings.filter(parking => parking.userId == userAux[0].id)
+        console.log("Estacionamientos del usuario: " + parkingAux);
         return res.json(parkingAux);
     } else {
         res.send('ERROR! Usuario inexistente: ' + req.query.email)
         console.log('ERROR! Usuario inexistente: ' + req.query.email);
     }
-    /* const token = req.headers['authorization'];
-    jsonwebtoken.verify(token,'frase secreta',(err,payload) =>{
-        if(err){
-            console.log("Error 401");
-            res.sendStatus(401);
-        }else{
-            console.log(parkings);
-            res.json(parkings)
-        }
-    })
-}) */
 })
 //PARKINGS BACKEND get con locationId
 app.get('/api/parkings/location', (req, res) => {
-    console.log(req.query.locationId);
+    console.log("LocationId recibido: " + req.query.locationId);
     let locationAux = locations.filter(location => location.id == req.query.locationId);
     if (locationAux.length > 0) {
-        console.log(locationAux[0]);
+        console.log("Barrio encontrado: " + locationAux[0]);
         let parkingAux = parkings.filter(parking => parking.locationId == locationAux[0].id)
+        console.log("Estacionamientos del barrio: " + parkingAux);
         return res.json(parkingAux);
     } else {
         res.send('ERROR! Barrio inexistente: ' + req.query.locationId)
         console.log('ERROR! Barrio inexistente: ' + req.query.locationId);
     }
-    /* const token = req.headers['authorization'];
-    jsonwebtoken.verify(token,'frase secreta',(err,payload) =>{
-        if(err){
-            console.log("Error 401");
-            res.sendStatus(401);
-        }else{
-            console.log(parkings);
-            res.json(parkings)
-        }
-    })
-}) */
 })
 //PARKINGS BACKEND post
 app.post('/api/parkings', (req, res) => {
     console.log(req.body);
     if (!req.body.name) {
+        console.log('ERROR! falta nombre ');
         return res.send('ERROR! falta nombre ');
     }
     if (req.body.locationId < 0) {
+        console.log('ERROR! falta barrio ');
         return res.send('ERROR! falta barrio ');
     }
     if (!req.body.userId) {
+        console.log('ERROR! falta userId ');
         return res.send('ERROR! falta userId ');
     }
     let userAux = users.filter(user => user.id == req.body.userId);
     if (userAux.length <= 0) {
+        console.log('ERROR! Usuario inexsistente ');
         return res.send('ERROR! Usuario inexsistente ');
     }
     let locationAux = locations.filter(location => location.id == req.body.locationId);
     if (locationAux.length <= 0) {
+        console.log('ERROR! Barrio inexsistente ');
         return res.send('ERROR! Barrio inexsistente ');
     }
     let parkingAux = parkings.filter(parking => parking.name == req.body.name);
     if (parkingAux.length > 0) {
+        console.log('ERROR! Parking existente ');
         return res.send('ERROR! Parking existente ');
     }
     lastIdParking++
     let parking = { id: lastIdParking, name: req.body.name, locationId: req.body.locationId, userId: req.body.userId };
     parkings.push(parking);
     res.send('Alta OK ' + req.body.name)
-    console.log('Alta OK ' + req.body.name);
-    /* const token = req.headers['authorization'];
-    jsonwebtoken.verify(token,'frase secreta',(err,payload) =>{
-        if(err){
-            console.log("Error 401");
-            res.sendStatus(401);
-        }else{
-            parkings.push(req.body);
-            res.send('Alta OK')
-            console.log('Alta OK' + req.body);
-        }
-    }) */
+    console.log('Parking registrado: ' + parking);
 })
 
 //LOCATIONS BACKEND
@@ -229,7 +170,7 @@ const locations = [
 ]
 //LOCATIONS BACKEND get
 app.get('/api/locations', (req, res) => {
-    console.log(locations);
+    console.log("Barrios: " + locations);
     return res.json(locations);
 })
 
@@ -242,58 +183,42 @@ const vehicles = [
 ]
 //VEHICLES BACKEND get
 app.get('/api/vehicles', (req, res) => {
-    console.log(req.query.email);
+    console.log("Email recibido: " + req.query.email);
     let userAux = users.filter(user => user.email == req.query.email);
     if (userAux.length > 0) {
-        console.log(userAux[0]);
+        console.log("Usuario encontrado: " + userAux[0]);
         let vehiclesAux = vehicles.filter(vehicle => vehicle.userId == userAux[0].id)
+        console.log("Vehiculos del usuario: " + vehiclesAux);
         return res.json(vehiclesAux);
     } else {
         res.send('ERROR! Usuario inexistente: ' + req.query.email)
         console.log('ERROR! Usuario inexistente: ' + req.query.email);
     }
-
-    /* const token = req.headers['authorization'];
-    jsonwebtoken.verify(token,'frase secreta',(err,payload) =>{
-        if(err){
-            console.log("Error 401");
-            res.sendStatus(401);
-        }else{
-            console.log(vehicles);
-            res.json(vehicles)
-        }
-    })
-}) */
 })
 app.post('/api/vehicles', (req, res) => {
-    if (!req.body.patent || !req.body.userId) {
-        return res.send('ERROR! falta patente o userId ');
+    if (!req.body.patent) {
+        console.log('ERROR! falta patente');
+        return res.send('ERROR! falta patente');
+    }
+    if(!req.body.userId){
+        console.log('ERROR! falta userId');
+        return res.send('ERROR! falta userId');
     }
     let userAux = users.filter(user => user.id == req.body.userId);
     if (userAux.length <= 0) {
+        console.log('ERROR! Usuario inexsistente' + req.body.userId);
         return res.send('ERROR! Usuario inexsistente ');
     }
     let vehicleAux = vehicles.filter(vehicle => vehicle.patent == req.body.patent);
     if (vehicleAux.length > 0) {
+        console.log('ERROR! Vehiculo existente ' + req.body.patent);
         return res.send('ERROR! Vehiculo existente ');
     }
     lastIdVehicle++
     let vehicle = { id: lastIdVehicle, patent: req.body.patent, userId: req.body.userId };
     vehicles.push(vehicle);
     res.send('Alta OK ' + req.body.patent)
-    console.log('Alta OK ' + req.body.patent);
-
-    /* const token = req.headers['authorization'];
-    jsonwebtoken.verify(token,'frase secreta',(err,payload) =>{
-        if(err){
-            console.log("Error 401");
-            res.sendStatus(401);
-        }else{
-            vehicles.push(req.body);
-            res.send('Alta OK')
-            console.log('Alta OK' + req.body);
-        }
-    }) */
+    console.log('Vehiculo registrado:  ' + vehicle);
 })
 //OTROS
 app.get('/api/ping', (req, res) => {

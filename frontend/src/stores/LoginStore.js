@@ -17,18 +17,12 @@ export const useLoginStore = defineStore('loginStore', {
                 this.estaLogeado = true;
                 //GUARDO EL TOKEN EN LA LOCALSTORAGE DEL NAVEGADOR PARA FUTUROS USOS
                 localStorage.setItem('usuario',
-                JSON.stringify({email:usuarioInput.email, token:datos.data}))
+                    JSON.stringify({ email: usuarioInput.email, token: datos.data }))
             } catch (e) {
                 console.log(e);
                 this.usuarioStore = {};
                 this.estaLogeado = false;
             }
-    },
-        logout() {
-            this.estaLogeado = false
-            this.usuarioStore.email = "";
-            localStorage.removeItem('usuario')
-            this.$router.push('/home')
         }
     }
 

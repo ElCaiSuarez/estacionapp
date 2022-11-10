@@ -11,9 +11,11 @@ export default {
         }
     },
     mounted: function () {
+        console.log("Actualizar usuario" );
         let usuarioAux = JSON.parse(localStorage.getItem('usuario'));
         userService.getUsers(usuarioAux.email).then(res => {
             if(!res){
+                localStorage.removeItem('usuario');
                 this.$router.push('/')
             }
             this.user = res;
@@ -30,6 +32,7 @@ export default {
                     email: user.email,
                     password: user.password
                 }
+                alert("Se actualizo el usuario: VOLVER A INGRESAR!!!");
                 this.mensajeError = await userService.updateUser(userNuevo)
             } catch (e) {
                 this.mensajeError = e;

@@ -62,6 +62,7 @@ export default {
         }
     },
     mounted:function(){
+        console.log("Busqueda por Barrio");
         locationService.getLocations().then(res => {
             this.locations = res
             console.log(this.locations);
@@ -70,8 +71,9 @@ export default {
     methods: {
         async getPakgings(locationId) {
             try {
-                //console.log(locationId);
+                console.log("Estacionamientos del Barrio: " + locationId);
                 this.parkings = await parkingService.getParkings(locationId)
+                console.log(this.parkings);
             } catch (e) {
                 this.mensajeError = e;
             }
