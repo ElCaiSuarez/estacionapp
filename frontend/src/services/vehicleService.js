@@ -13,9 +13,9 @@ export default {
     }, */
     async getVehicles(email) {
         try {
-            console.log(email);
+            //console.log(email);
             const res = await apiService.apiClient.get('/vehicles', { params: { email: email } });
-            console.log(res.data);
+            //console.log(res.data);
             return res.data
         } catch (e) {
             throw "Error de conexion"
@@ -25,7 +25,20 @@ export default {
         try {
             apiService.apiClient.defaults.headers['authorization'] =
                 JSON.parse(localStorage.getItem('usuario')).token
-            await apiService.apiClient.post('/vehicles', vehicle);
+                const res = await apiService.apiClient.post('/vehicles', vehicle);
+                console.log("El backend devolvio el siguiente mensaje: " + res.data);
+                return res.data
+        } catch (e) {
+            throw "Error de conexion"
+        }
+    },
+    async deleteVehicle(vehicle) {//CON AUTENTICATION
+        try {
+            apiService.apiClient.defaults.headers['authorization'] =
+                JSON.parse(localStorage.getItem('usuario')).token
+            let saved = await apiService.apiClient.delete('/vehicles', { params: { patent: vehicle.patent } });
+            console.log("El backend devolvio el siguiente mensaje: " + saved.data);
+            return saved.data;
 
         } catch (e) {
             throw "Error de conexion"

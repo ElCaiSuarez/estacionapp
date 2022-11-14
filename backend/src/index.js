@@ -127,7 +127,9 @@ app.get('/api/parkings/location', (req, res) => {
 })
 //PARKINGS BACKEND post
 app.post('/api/parkings', (req, res) => {
-    console.log(req.body);
+    console.log("Nombre: " + req.body.name);
+    console.log("LocationId: " + req.body.locationId);
+    console.log("Email: " + req.body.email);
     if (!req.body.name) {
         console.log('ERROR! falta nombre ');
         return res.send('ERROR! falta nombre ');
@@ -136,11 +138,11 @@ app.post('/api/parkings', (req, res) => {
         console.log('ERROR! falta barrio ');
         return res.send('ERROR! falta barrio ');
     }
-    if (!req.body.userId) {
-        console.log('ERROR! falta userId ');
-        return res.send('ERROR! falta userId ');
+    if (!req.body.email) {
+        console.log('ERROR! falta email ');
+        return res.send('ERROR! falta email ');
     }
-    let userAux = users.filter(user => user.id == req.body.userId);
+    let userAux = users.filter(user => user.email == req.body.email);
     if (userAux.length <= 0) {
         console.log('ERROR! Usuario inexsistente ');
         return res.send('ERROR! Usuario inexsistente ');
@@ -156,10 +158,34 @@ app.post('/api/parkings', (req, res) => {
         return res.send('ERROR! Parking existente ');
     }
     lastIdParking++
-    let parking = { id: lastIdParking, name: req.body.name, locationId: req.body.locationId, userId: req.body.userId };
+    let parking = { id: lastIdParking, name: req.body.name, locationId: req.body.locationId, userId: userAux[0].id };
     parkings.push(parking);
-    res.send('Alta OK ' + req.body.name)
-    console.log('Parking registrado: ' + parking);
+    console.log('Parking registrado: ' + parking.id + " " + parking.name + " " + parking.locationId + " " + parking.userId);
+    return res.json(parking);
+})
+app.delete('/api/parkings', (req, res) => {
+    console.log("Id recibido: " + req.query.id);
+    let parkingAux = parkings.filter(parking => parking.id == req.query.id);
+    if (parkingAux.length <= 0) {
+        console.log('ERROR! Parking inexistente ' + req.query.id);
+        return res.send('ERROR! Parking inexistente ')
+    }
+    parkingAux[0].name = null;
+    parkingAux[0].locationId = null;
+    parkingAux[0].userId = null;
+    console.log('Parking borrado: ' + req.query.id);
+    return res.json(parkingAux[0]);
+})
+app.patch('/api/parkings', (req, res) => {
+    console.log("Id recibido: " + req.body.id);
+    let parkingAux = parkings.filter(parking => parking.id == req.body.id);
+    if (parkingAux.length <= 0) {
+        console.log('ERROR! Parking inexistente ' + req.body.id);
+        return res.send('ERROR! Parking inexistente ')
+    }
+    parkingAux[0].name = req.body.name;
+    console.log('Parking Actualizado: ' + req.body.id);
+    return res.json(parkingAux[0]);
 })
 
 //LOCATIONS BACKEND
@@ -196,17 +222,19 @@ app.get('/api/vehicles', (req, res) => {
     }
 })
 app.post('/api/vehicles', (req, res) => {
+    console.log("Patente: " + req.body.patent);
+    console.log("Email: " + req.body.email);
     if (!req.body.patent) {
         console.log('ERROR! falta patente');
         return res.send('ERROR! falta patente');
     }
-    if(!req.body.userId){
-        console.log('ERROR! falta userId');
-        return res.send('ERROR! falta userId');
+    if(!req.body.email){
+        console.log('ERROR! falta email');
+        return res.send('ERROR! falta email');
     }
-    let userAux = users.filter(user => user.id == req.body.userId);
+    let userAux = users.filter(user => user.email == req.body.email);
     if (userAux.length <= 0) {
-        console.log('ERROR! Usuario inexsistente' + req.body.userId);
+        console.log('ERROR! Usuario inexsistente' + req.body.email);
         return res.send('ERROR! Usuario inexsistente ');
     }
     let vehicleAux = vehicles.filter(vehicle => vehicle.patent == req.body.patent);
@@ -215,11 +243,24 @@ app.post('/api/vehicles', (req, res) => {
         return res.send('ERROR! Vehiculo existente ');
     }
     lastIdVehicle++
-    let vehicle = { id: lastIdVehicle, patent: req.body.patent, userId: req.body.userId };
+    let vehicle = { id: lastIdVehicle, patent: req.body.patent, userId: userAux[0].id };
     vehicles.push(vehicle);
-    res.send('Alta OK ' + req.body.patent)
-    console.log('Vehiculo registrado:  ' + vehicle);
+    console.log('Vehiculo registrado:  ' + vehicle.id + " " + vehicle.patent + " " + vehicle.userId);
+    return res.json(vehicle);
 })
+app.delete('/api/vehicles', (req, res) => {
+    console.log("Patente recibida: " + req.query.patent);
+    let vehicleAux = vehicles.filter(vehicle => vehicle.patent == req.query.patent);
+    if (vehicleAux.length <= 0) {
+        console.log('ERROR! Vehiculo inexistente ' + req.query.patent);
+        return res.send('ERROR! Vehiculo inexistente ')
+    }
+    vehicleAux[0].patent = null;
+    vehicleAux[0].userId = null;
+    console.log('Vehiculo borrado: ' + req.query.patent);
+    return res.json(vehicleAux[0]);
+})
+
 //OTROS
 app.get('/api/ping', (req, res) => {
     res.send('pong');

@@ -25,11 +25,37 @@ export default {
         try {
             apiService.apiClient.defaults.headers['authorization'] =
                 JSON.parse(localStorage.getItem('usuario')).token
-            await apiService.apiClient.post('/parkings', parking);
+            const res = await apiService.apiClient.post('/parkings', parking);
+            console.log("El backend devolvio el siguiente mensaje: " + res.data);
+            return res.data
 
         } catch (e) {
             throw "Error de conexion"
         }
     },
+    async deleteParking(parking) {//CON AUTENTICATION
+        try {
+            apiService.apiClient.defaults.headers['authorization'] =
+                JSON.parse(localStorage.getItem('usuario')).token
+            let saved = await apiService.apiClient.delete('/parkings', { params: { id: parking.id } });
+            console.log("El backend devolvio el siguiente mensaje: " + saved.data);
+            return saved.data;
+
+        } catch (e) {
+            throw "Error de conexion"
+        }
+    },
+    async updateParking(parking) {//CON AUTENTICATION
+        try {
+            apiService.apiClient.defaults.headers['authorization'] =
+                JSON.parse(localStorage.getItem('usuario')).token
+            let saved = await apiService.apiClient.patch('/parkings', parking);
+            console.log("El backend devolvio el siguiente mensaje: " + saved.data);
+            return saved.data;
+
+        } catch (e) {
+            throw "Error de conexion"
+        }
+    }
 
 }
